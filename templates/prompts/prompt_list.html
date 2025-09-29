@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<header>
+    <h1>{{ page_title }}</h1>
+    <p>نمونه‌هایی آماده از پرامپت‌های ساختاریافته برای گرفتن نتیجه بهتر از ChatGPT.</p>
+</header>
+
+<section>
+    {% for category in categories %}
+        <article class="card">
+            <h2>{{ category.name }}</h2>
+            <p>{{ category.description }}</p>
+            <div class="card-grid">
+                {% for prompt in category.prompts %}
+                    <div class="card">
+                        <h3>{{ prompt.title }}</h3>
+                        <pre>{{ prompt.content }}</pre>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    {% endfor %}
+</section>
+
+<section class="tips">
+    <h2>نکات سریع برای نوشتن پرامپت</h2>
+    <ul>
+        {% for tip in quick_tips %}
+            <li>{{ tip }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}گالری پرامپت{% endblock %}</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f5f5f5;
+            --text: #1f2933;
+            --accent: #4f46e5;
+            --card: #ffffff;
+            --muted: #6b7280;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #101827;
+                --text: #f9fafb;
+                --card: #1f2937;
+                --muted: #9ca3af;
+            }
+        }
+        body {
+            font-family: "Vazirmatn", "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 0.75rem;
+        }
+        h2 {
+            margin-top: 2rem;
+            font-size: 1.6rem;
+        }
+        p {
+            line-height: 1.8;
+        }
+        ul {
+            padding-right: 1.25rem;
+            line-height: 1.8;
+        }
+        li {
+            margin-bottom: 0.4rem;
+        }
+        a {
+            color: inherit;
+        }
+        .card-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        @media (min-width: 700px) {
+            .card-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        .card pre {
+            background: rgba(79, 70, 229, 0.08);
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            white-space: pre-wrap;
+            font-family: "Vazirmatn", "Courier New", monospace;
+            font-size: 0.95rem;
+            direction: rtl;
+        }
+        .tips {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(129, 140, 248, 0.15));
+            border-radius: 18px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .tips h2 {
+            margin-top: 0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+        <footer>
+            ساخته شده با جنگو برای نمایش ایده‌های پرامپت
+        </footer>
+    </div>
+</body>
+</html>
