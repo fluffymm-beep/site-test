@@ -1,63 +1,7 @@
+from django.db.models import Prefetch, Q
 from django.shortcuts import render
 
-PROMPT_CATEGORIES = [
-    {
-        "name": "آموزش و یادگیری",
-        "description": "پرامپت‌هایی برای یادگیری موضوعات جدید یا توضیح مفاهیم پیچیده به زبان ساده.",
-        "prompts": [
-            {
-                "title": "درس خصوصی با مثال‌های متنوع",
-                "content": "می‌خواهم درباره {{موضوع}} یاد بگیرم. ابتدا یک تصویر کلی بده، سپس با مثال‌های واقعی و تشبیه‌های ساده توضیح بده.",
-            },
-            {
-                "title": "آزمون جمع‌بندی",
-                "content": "یک آزمون کوتاه درباره {{موضوع}} طراحی کن که شامل 5 سؤال چندگزینه‌ای باشد و در انتها پاسخ تشریحی ارائه بده.",
-            },
-        ],
-    },
-    {
-        "name": "خلاقیت و تولید محتوا",
-        "description": "ایده‌هایی برای تولید محتوا، داستان‌گویی و الهام خلاقانه.",
-        "prompts": [
-            {
-                "title": "ایده‌پردازی محتوا",
-                "content": "برای شبکه اجتماعی {{پلتفرم}}، 10 ایده پست جذاب درباره {{موضوع}} پیشنهاد بده و برای هرکدام توضیح کوتاهی بنویس.",
-            },
-            {
-                "title": "قصه‌گویی تعاملی",
-                "content": "یک داستان کوتاه علمی-تخیلی با قهرمانی به نام {{نام}} بنویس و در سه جای داستان از من بخواه بین دو مسیر یکی را انتخاب کنم.",
-            },
-        ],
-    },
-    {
-        "name": "بهره‌وری و برنامه‌ریزی",
-        "description": "کمک به سازمان‌دهی کارها، مدیریت زمان و ساختاردهی پروژه‌ها.",
-        "prompts": [
-            {
-                "title": "برنامه‌ریزی روزانه",
-                "content": "برنامه‌ای واقع‌بینانه برای روز کاری من بساز. من از ساعت {{شروع}} تا {{پایان}} وقت دارم و کارهای اصلی‌ام عبارت‌اند از: {{کارها}}. زمان استراحت و اولویت‌بندی را هم لحاظ کن.",
-            },
-            {
-                "title": "شکستن پروژه",
-                "content": "پروژه‌ای با هدف {{هدف}} را به مراحل کوچک تقسیم کن، برای هر مرحله معیار موفقیت و مدت زمان تقریبی پیشنهاد بده.",
-            },
-        ],
-    },
-    {
-        "name": "کدنویسی و توسعه نرم‌افزار",
-        "description": "پرامپت‌های مناسب برای توضیح کد، رفع باگ و طراحی معماری.",
-        "prompts": [
-            {
-                "title": "بازبینی کد",
-                "content": "این قطعه کد {{زبان}} را بررسی کن، مشکلات احتمالی را پیدا کن و راه‌حل پیشنهادی بده: ```{{کد}}```",
-            },
-            {
-                "title": "طراحی معماری",
-                "content": "برای ساخت یک {{نوع_برنامه}} با مشخصات {{جزئیات}} چه معماری نرم‌افزاری و الگوهایی پیشنهاد می‌کنی؟",
-            },
-        ],
-    },
-]
+from .models import Category, Prompt
 
 
 def prompt_list(request):
@@ -69,10 +13,34 @@ def prompt_list(request):
         "با افزودن محدودیت زمانی یا تعداد خروجی، پاسخ دقیق‌تر می‌شود.",
     ]
 
+    search_query = request.GET.get("q", "").strip()
+
+    prompt_queryset = Prompt.objects.select_related("category").order_by("title")
+    if search_query:
+        prompt_queryset = prompt_queryset.filter(
+            Q(title__icontains=search_query) | Q(content__icontains=search_query)
+        )
+
+    prefetch = Prefetch("prompts", queryset=prompt_queryset, to_attr="display_prompts")
+    categories_queryset = Category.objects.order_by("name").prefetch_related(prefetch)
+
+    categories = []
+    total_prompts = 0
+    for category in categories_queryset:
+        prompts = list(getattr(category, "display_prompts", []))
+        if search_query and not prompts:
+            continue
+        total_prompts += len(prompts)
+        category.prompts_for_display = prompts
+        categories.append(category)
+
     context = {
         "page_title": "گالری پرامپت‌های ChatGPT",
-        "categories": PROMPT_CATEGORIES,
+        "categories": categories,
         "quick_tips": quick_tips,
+        "search_query": search_query,
+        "total_prompts": total_prompts,
+        "is_search": bool(search_query),
     }
 
     return render(request, "prompts/prompt_list.html", context)

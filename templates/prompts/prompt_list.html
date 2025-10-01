@@ -2,30 +2,251 @@
 
 {% block title %}{{ page_title }}{% endblock %}
 
+{% block extra_head %}
+<style>
+    .hero {
+        padding: 2.5rem 2.2rem;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        inset: -60% auto auto -30%;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(0, 255, 247, 0.35) 0%, transparent 70%);
+        opacity: 0.9;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        margin: 0 0 0.75rem;
+    }
+
+    .hero p {
+        margin: 0 0 1.5rem;
+        color: rgba(236, 239, 241, 0.8);
+        line-height: 1.9;
+    }
+
+    .search-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        align-items: stretch;
+        margin-top: 1rem;
+    }
+
+    .search-form input[type="search"] {
+        flex: 1 1 240px;
+        padding: 0.9rem 1.1rem;
+        border-radius: 16px;
+        border: 1px solid rgba(176, 190, 197, 0.35);
+        background: rgba(10, 25, 47, 0.35);
+        color: var(--white-smoke);
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-form input[type="search"]:focus {
+        outline: none;
+        border-color: rgba(0, 255, 247, 0.8);
+        box-shadow: 0 0 0 3px rgba(0, 255, 247, 0.18);
+    }
+
+    .search-form button,
+    .search-form a.reset {
+        padding: 0.85rem 1.6rem;
+        border-radius: 16px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, rgba(0, 255, 247, 0.9), rgba(236, 239, 241, 0.25));
+        color: #051524;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .search-form a.reset {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(176, 190, 197, 0.2);
+        color: var(--white-smoke);
+        text-decoration: none;
+    }
+
+    .search-form button:hover,
+    .search-form a.reset:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(0, 255, 247, 0.18);
+    }
+
+    .search-meta {
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        color: var(--silver-gray);
+    }
+
+    .empty-state {
+        padding: 2.5rem;
+        text-align: center;
+        line-height: 1.9;
+        margin-bottom: 2rem;
+    }
+
+    .category-card {
+        padding: 2rem 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .category-header h2 {
+        margin: 0;
+        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        color: var(--white-smoke);
+    }
+
+    .category-header p {
+        margin: 0;
+        color: rgba(236, 239, 241, 0.75);
+        line-height: 1.8;
+        flex: 1 1 280px;
+    }
+
+    .prompt-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.2rem;
+    }
+
+    .prompt-card {
+        background: rgba(38, 50, 56, 0.55);
+        border: 1px solid rgba(176, 190, 197, 0.18);
+        border-radius: 18px;
+        padding: 1.3rem 1.5rem;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 1px 0 rgba(236, 239, 241, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .prompt-card h3 {
+        margin: 0;
+        font-size: 1.15rem;
+        color: var(--white-smoke);
+    }
+
+    .prompt-card pre {
+        margin: 0;
+        white-space: pre-wrap;
+        font-family: "Vazirmatn", "Courier New", monospace;
+        font-size: 0.95rem;
+        line-height: 1.9;
+        color: rgba(236, 239, 241, 0.92);
+        background: rgba(10, 25, 47, 0.45);
+        border-radius: 14px;
+        padding: 0.9rem 1rem;
+        border: 1px solid rgba(0, 255, 247, 0.15);
+    }
+
+    .tips {
+        padding: 2rem 2.2rem;
+        margin-top: 3rem;
+        border: 1px solid rgba(0, 255, 247, 0.15);
+    }
+
+    .tips h2 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: var(--white-smoke);
+    }
+
+    .tips ul {
+        margin: 0;
+        padding-right: 1.2rem;
+        color: rgba(236, 239, 241, 0.8);
+        line-height: 1.9;
+    }
+
+    @media (max-width: 720px) {
+        .category-card,
+        .tips,
+        .hero {
+            padding: 1.9rem 1.6rem;
+        }
+
+        .category-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .search-form button,
+        .search-form a.reset {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<header>
+<section class="hero glass">
     <h1>{{ page_title }}</h1>
     <p>نمونه‌هایی آماده از پرامپت‌های ساختاریافته برای گرفتن نتیجه بهتر از ChatGPT.</p>
-</header>
-
-<section>
-    {% for category in categories %}
-        <article class="card">
-            <h2>{{ category.name }}</h2>
-            <p>{{ category.description }}</p>
-            <div class="card-grid">
-                {% for prompt in category.prompts %}
-                    <div class="card">
-                        <h3>{{ prompt.title }}</h3>
-                        <pre>{{ prompt.content }}</pre>
-                    </div>
-                {% endfor %}
-            </div>
-        </article>
-    {% endfor %}
+    <form class="search-form" method="get">
+        <input type="search" name="q" value="{{ search_query }}" placeholder="دنبال چه پرامپتی می‌گردی؟" aria-label="جستجوی پرامپت">
+        <button type="submit">جستجو</button>
+        {% if is_search %}
+            <a class="reset" href="{% url 'prompt_list' %}">حذف فیلتر</a>
+        {% endif %}
+    </form>
+    {% if is_search %}
+        <p class="search-meta">{{ total_prompts }} نتیجه برای «{{ search_query }}» یافت شد.</p>
+    {% endif %}
 </section>
 
-<section class="tips">
+{% if is_search and total_prompts == 0 %}
+    <section class="empty-state glass">
+        <h2>نتیجه‌ای پیدا نشد</h2>
+        <p>عبارت جستجو را تغییر بده یا از دکمه حذف فیلتر استفاده کن تا همه پرامپت‌ها نمایش داده شوند.</p>
+    </section>
+{% endif %}
+
+{% for category in categories %}
+    <section class="category-card glass">
+        <div class="category-header">
+            <div>
+                <h2>{{ category.name }}</h2>
+                <p>{{ category.description }}</p>
+            </div>
+            <span>{{ category.prompts_for_display|length }} پرامپت</span>
+        </div>
+        <div class="prompt-grid">
+            {% for prompt in category.prompts_for_display %}
+                <article class="prompt-card">
+                    <h3>{{ prompt.title }}</h3>
+                    <pre>{{ prompt.content }}</pre>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+{% endfor %}
+
+<section class="tips glass">
     <h2>نکات سریع برای نوشتن پرامپت</h2>
     <ul>
         {% for tip in quick_tips %}
